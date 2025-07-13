@@ -1,0 +1,176 @@
+
+import React, { useState } from 'react';
+import { X, Calendar, FileText, Tag } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Achievement } from '@/hooks/useAchievements';
+
+interface AchievementFormProps {
+  onSubmit: (achievement: Omit<Achievement, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => void;
+  onCancel: () => void;
+}
+
+const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel }) => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    date: new Date().toISOString().split('T')[0],
+    isCompleted: false,
+    isAppliedToWebsite: false,
+    category: 'On-Page SEO'
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.title.trim() || !formData.description.trim()) {
+      return;
+    }
+
+    onSubmit({
+      title: formData.title,
+      description: formData.description,
+      date: new Date(formData.date),
+      isCompleted: formData.isCompleted,
+      isAppliedToWebsite: formData.isAppliedToWebsite,
+      category: formData.category
+    });
+  };
+
+  const categories = [
+    'On-Page SEO',
+    'Technical SEO',
+    'Content SEO',
+    'Link Building',
+    'Local SEO',
+    'Analytics & Reporting',
+    'Keyword Research',
+    'Competitor Analysis'
+  ];
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center">
+                <FileText className="mr-2 h-5 w-5" />
+                Add New SEO Achievement
+              </CardTitle>
+              <CardDescription>Create a new achievement to track your SEO activities and progress</CardDescription>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onCancel}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Achievement Title *</Label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="e.g., Optimize meta descriptions for product pages"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description *</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Describe what was accomplished, tools used, and expected impact..."
+                rows={4}
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="date" className="flex items-center">
+                  <Calendar className="mr-1 h-4 w-4" />
+                  Date
+                </Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="category" className="flex items-center">
+                  <Tag className="mr-1 h-4 w-4" />
+                  Category
+                </Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label htmlFor="completed" className="text-sm font-medium">Achievement Completed</Label>
+                  <p className="text-sm text-gray-600">Mark if this achievement has been finished</p>
+                </div>
+                <Switch
+                  id="completed"
+                  checked={formData.isCompleted}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isCompleted: checked })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label htmlFor="applied" className="text-sm font-medium">Applied to Website</Label>
+                  <p className="text-sm text-gray-600">Mark if changes have been implemented on the live site</p>
+                </div>
+                <Switch
+                  id="applied"
+                  checked={formData.isAppliedToWebsite}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isAppliedToWebsite: checked })}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                Add Achievement
+              </Button>
+              <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default AchievementForm;
