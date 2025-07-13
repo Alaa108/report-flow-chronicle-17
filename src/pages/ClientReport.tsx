@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Calendar, CheckCircle, Clock, Globe, Filter, FileText } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Globe, Filter, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import ClientAchievementCard from '@/components/ClientAchievementCard';
 
@@ -22,6 +23,8 @@ const ClientReport = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedYear, setSelectedYear] = useState<string>('2024');
+  const [currentPage, setCurrentPage] = useState(1);
+  const achievementsPerPage = 10;
 
   useEffect(() => {
     const fetchPublicAchievements = async () => {
@@ -61,6 +64,17 @@ const ClientReport = () => {
     });
   }, [achievements, selectedMonth, selectedYear]);
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredAchievements.length / achievementsPerPage);
+  const startIndex = (currentPage - 1) * achievementsPerPage;
+  const endIndex = startIndex + achievementsPerPage;
+  const currentAchievements = filteredAchievements.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedMonth, selectedYear]);
+
   const completedAchievements = filteredAchievements.filter(achievement => achievement.is_completed).length;
   const appliedAchievements = filteredAchievements.filter(achievement => achievement.is_applied_to_website).length;
 
@@ -93,14 +107,52 @@ const ClientReport = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">SEO Progress Report</h1>
               <p className="mt-2 text-gray-600">Review completed SEO achievements and their impact on your website</p>
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-500">
-              <FileText className="h-4 w-4" />
-              <span>Client Report View</span>
+            <div className="flex items-center gap-6">
+              {/* Filter Controls */}
+              <div className="flex items-center gap-3">
+                <Filter className="h-4 w-4 text-gray-500" />
+                <div className="flex gap-2">
+                  <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map(month => (
+                        <SelectItem key={month.value} value={month.value}>
+                          {month.value === 'all' ? 'All' : month.label.slice(0, 3)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={selectedYear} onValueChange={setSelectedYear}>
+                    <SelectTrigger className="w-24">
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="2030">2030</SelectItem>
+                      <SelectItem value="2029">2029</SelectItem>
+                      <SelectItem value="2028">2028</SelectItem>
+                      <SelectItem value="2027">2027</SelectItem>
+                      <SelectItem value="2026">2026</SelectItem>
+                      <SelectItem value="2025">2025</SelectItem>
+                      <SelectItem value="2024">2024</SelectItem>
+                      <SelectItem value="2023">2023</SelectItem>
+                      <SelectItem value="2022">2022</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              {/* Client Badge */}
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <FileText className="h-4 w-4" />
+                <span>Client Report View</span>
+              </div>
             </div>
           </div>
         </div>
@@ -176,66 +228,26 @@ const ClientReport = () => {
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center text-lg">
-              <Filter className="mr-2 h-5 w-5" />
-              Filter Report
-            </CardTitle>
-            <CardDescription>View SEO achievements by specific month and year</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Month</label>
-                <Select value={selectedMonth} onValueChange={setSelectedMonth}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select month" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {months.map(month => (
-                      <SelectItem key={month.value} value={month.value}>
-                        {month.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
-                <Select value={selectedYear} onValueChange={setSelectedYear}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Years</SelectItem>
-                    <SelectItem value="2030">2030</SelectItem>
-                    <SelectItem value="2029">2029</SelectItem>
-                    <SelectItem value="2028">2028</SelectItem>
-                    <SelectItem value="2027">2027</SelectItem>
-                    <SelectItem value="2026">2026</SelectItem>
-                    <SelectItem value="2025">2025</SelectItem>
-                    <SelectItem value="2024">2024</SelectItem>
-                    <SelectItem value="2023">2023</SelectItem>
-                    <SelectItem value="2022">2022</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Achievements Report */}
         <Card>
           <CardHeader>
-            <CardTitle>SEO Achievements Completed</CardTitle>
-            <CardDescription>
-              {selectedMonth !== 'all' || selectedYear !== 'all' 
-                ? `Report for ${selectedMonth !== 'all' ? months.find(m => m.value === selectedMonth)?.label : 'all months'} ${selectedYear !== 'all' ? selectedYear : ''}`
-                : 'Complete overview of all SEO achievements'
-              }
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>SEO Achievements Completed</CardTitle>
+                <CardDescription>
+                  {selectedMonth !== 'all' || selectedYear !== 'all' 
+                    ? `Report for ${selectedMonth !== 'all' ? months.find(m => m.value === selectedMonth)?.label : 'all months'} ${selectedYear !== 'all' ? selectedYear : ''}`
+                    : 'Complete overview of all SEO achievements'
+                  }
+                </CardDescription>
+              </div>
+              {filteredAchievements.length > 0 && (
+                <div className="text-sm text-gray-500">
+                  Showing {startIndex + 1}-{Math.min(endIndex, filteredAchievements.length)} of {filteredAchievements.length} achievements
+                </div>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {filteredAchievements.length === 0 ? (
@@ -249,11 +261,59 @@ const ClientReport = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {filteredAchievements.map(achievement => (
-                  <ClientAchievementCard key={achievement.id} achievement={achievement} />
-                ))}
-              </div>
+              <>
+                <div className="space-y-4">
+                  {currentAchievements.map(achievement => (
+                    <ClientAchievementCard key={achievement.id} achievement={achievement} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-sm text-gray-500">
+                      Page {currentPage} of {totalPages}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="flex items-center"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        Previous
+                      </Button>
+                      
+                      <div className="flex items-center space-x-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setCurrentPage(page)}
+                            className="w-8 h-8 p-0"
+                          >
+                            {page}
+                          </Button>
+                        ))}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="flex items-center"
+                      >
+                        Next
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
