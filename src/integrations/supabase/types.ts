@@ -14,10 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      achievements: {
+        Row: {
+          category: string
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          is_applied_to_website: boolean
+          is_completed: boolean
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          is_applied_to_website?: boolean
+          is_completed?: boolean
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          is_applied_to_website?: boolean
+          is_completed?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      achievements_public: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          date: string | null
+          description: string | null
+          id: string | null
+          is_applied_to_website: boolean | null
+          is_completed: boolean | null
+          title: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string | null
+          is_applied_to_website?: boolean | null
+          is_completed?: boolean | null
+          title?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          date?: string | null
+          description?: string | null
+          id?: string | null
+          is_applied_to_website?: boolean | null
+          is_completed?: boolean | null
+          title?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
