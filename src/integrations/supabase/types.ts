@@ -23,6 +23,7 @@ export type Database = {
           id: string
           is_applied_to_website: boolean
           is_completed: boolean
+          link: string | null
           title: string
           updated_at: string
           user_id: string
@@ -35,6 +36,7 @@ export type Database = {
           id?: string
           is_applied_to_website?: boolean
           is_completed?: boolean
+          link?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -47,6 +49,7 @@ export type Database = {
           id?: string
           is_applied_to_website?: boolean
           is_completed?: boolean
+          link?: string | null
           title?: string
           updated_at?: string
           user_id?: string

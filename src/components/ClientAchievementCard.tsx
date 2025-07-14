@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, Globe, Tag } from 'lucide-react';
+import { Calendar, CheckCircle, Globe, Tag, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -12,6 +11,7 @@ interface PublicAchievement {
   is_completed: boolean;
   is_applied_to_website: boolean;
   category: string;
+  link?: string;
   created_at: string;
 }
 
@@ -86,6 +86,20 @@ const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achieveme
                 {showFullDescription ? 'Show less' : 'Show more'}
               </button>
             )}
+          </div>
+        )}
+
+        {achievement.link && (
+          <div className="mb-4">
+            <a 
+              href={achievement.link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View Related File/Link
+            </a>
           </div>
         )}
 

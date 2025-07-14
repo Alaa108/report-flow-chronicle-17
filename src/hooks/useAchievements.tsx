@@ -12,6 +12,7 @@ export interface Achievement {
   isCompleted: boolean;
   isAppliedToWebsite: boolean;
   category: string;
+  link?: string;
   user_id: string;
   created_at: string;
   updated_at: string;
@@ -43,6 +44,7 @@ export const useAchievements = () => {
         isCompleted: item.is_completed,
         isAppliedToWebsite: item.is_applied_to_website,
         category: item.category,
+        link: item.link || '',
         user_id: item.user_id,
         created_at: item.created_at,
         updated_at: item.updated_at
@@ -73,6 +75,7 @@ export const useAchievements = () => {
           is_completed: achievement.isCompleted,
           is_applied_to_website: achievement.isAppliedToWebsite,
           category: achievement.category,
+          link: achievement.link,
           user_id: user.id
         }])
         .select()
@@ -89,6 +92,7 @@ export const useAchievements = () => {
           isCompleted: data.is_completed,
           isAppliedToWebsite: data.is_applied_to_website,
           category: data.category,
+          link: data.link || '',
           user_id: data.user_id,
           created_at: data.created_at,
           updated_at: data.updated_at
@@ -120,6 +124,7 @@ export const useAchievements = () => {
       if (updates.isCompleted !== undefined) updateData.is_completed = updates.isCompleted;
       if (updates.isAppliedToWebsite !== undefined) updateData.is_applied_to_website = updates.isAppliedToWebsite;
       if (updates.category !== undefined) updateData.category = updates.category;
+      if (updates.link !== undefined) updateData.link = updates.link;
 
       const { error } = await (supabase as any)
         .from('achievements')

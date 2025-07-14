@@ -13,6 +13,7 @@ const Index = () => {
   const { user, signOut } = useAuth();
   const { achievements, loading, addAchievement, updateAchievement, deleteAchievement } = useAchievements();
   const [showAchievementForm, setShowAchievementForm] = useState(false);
+  const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [selectedYear, setSelectedYear] = useState<string>('2024');
 
@@ -35,8 +36,23 @@ const Index = () => {
   }, [achievements, selectedMonth, selectedYear]);
 
   const addNewAchievement = (achievement: Omit<Achievement, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
-    addAchievement(achievement);
+    if (editingAchievement) {
+      updateAchievement(editingAchievement.id, achievement);
+      setEditingAchievement(null);
+    } else {
+      addAchievement(achievement);
+    }
     setShowAchievementForm(false);
+  };
+
+  const handleEditAchievement = (achievement: Achievement) => {
+    setEditingAchievement(achievement);
+    setShowAchievementForm(true);
+  };
+
+  const handleCancelForm = () => {
+    setShowAchievementForm(false);
+    setEditingAchievement(null);
   };
 
   const updateExistingAchievement = (achievementId: string, updates: Partial<Achievement>) => {
@@ -267,6 +283,7 @@ const Index = () => {
                     achievement={achievement} 
                     onUpdate={updateExistingAchievement}
                     onDelete={deleteExistingAchievement}
+                    onEdit={handleEditAchievement}
                   />
                 ))}
               </div>
@@ -279,7 +296,9 @@ const Index = () => {
       {showAchievementForm && (
         <AchievementForm 
           onSubmit={addNewAchievement}
-          onCancel={() => setShowAchievementForm(false)}
+          onCancel={handleCancelForm}
+          initialData={editingAchievement || undefined}
+          isEdit={!!editingAchievement}
         />
       )}
     </div>

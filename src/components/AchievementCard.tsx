@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Calendar, CheckCircle, Clock, Globe, Trash2, Tag, MoreHorizontal } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Globe, Trash2, Tag, MoreHorizontal, Edit2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,9 +12,10 @@ interface AchievementCardProps {
   achievement: Achievement;
   onUpdate: (achievementId: string, updates: Partial<Achievement>) => void;
   onDelete: (achievementId: string) => void;
+  onEdit: (achievement: Achievement) => void;
 }
 
-const AchievementCard: React.FC<AchievementCardProps> = ({ achievement, onUpdate, onDelete }) => {
+const AchievementCard: React.FC<AchievementCardProps> = ({ achievement, onUpdate, onDelete, onEdit }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
 
   const formatDate = (date: Date) => {
@@ -83,6 +84,10 @@ const AchievementCard: React.FC<AchievementCardProps> = ({ achievement, onUpdate
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(achievement)}>
+                <Edit2 className="mr-2 h-4 w-4" />
+                Edit Achievement
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleDelete} className="text-red-600 hover:text-red-700">
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete Achievement
@@ -107,6 +112,20 @@ const AchievementCard: React.FC<AchievementCardProps> = ({ achievement, onUpdate
             </button>
           )}
         </div>
+
+        {achievement.link && (
+          <div className="mb-4">
+            <a 
+              href={achievement.link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View Related File/Link
+            </a>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-100">
           <div className="flex flex-col sm:flex-row gap-4">
