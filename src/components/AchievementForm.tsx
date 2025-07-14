@@ -84,14 +84,22 @@ const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel })
 
             <div className="space-y-2">
               <Label htmlFor="description">Description *</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Describe what was accomplished, tools used, and expected impact..."
-                rows={4}
-                required
-              />
+              <div className="space-y-2">
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Describe what was accomplished, tools used, and expected impact..."
+                  rows={6}
+                  required
+                />
+                <div className="text-xs text-gray-500 space-y-1">
+                  <p><strong>Formatting tips:</strong></p>
+                  <p>• Use numbered lists: 1- First action 2- Second action</p>
+                  <p>• Separate paragraphs with line breaks for better readability</p>
+                  <p>• You can copy formatted text from documents and paste here</p>
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

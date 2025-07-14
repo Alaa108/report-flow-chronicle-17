@@ -70,12 +70,14 @@ const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achieveme
 
         {achievement.description && (
           <div className="mb-4">
-            <p className="text-gray-700 text-sm leading-relaxed">
-              {showFullDescription || !achievement.description || achievement.description.length <= 200 
-                ? achievement.description 
-                : truncatedDescription
-              }
-            </p>
+            <div 
+              className="text-gray-700 text-sm leading-relaxed whitespace-pre-line"
+              dangerouslySetInnerHTML={{
+                __html: showFullDescription || !achievement.description || achievement.description.length <= 200 
+                  ? achievement.description.replace(/\n/g, '<br/>') 
+                  : truncatedDescription.replace(/\n/g, '<br/>')
+              }}
+            />
             {achievement.description && achievement.description.length > 200 && (
               <button
                 onClick={() => setShowFullDescription(!showFullDescription)}

@@ -21,8 +21,8 @@ interface PublicAchievement {
 const ClientReport = () => {
   const [achievements, setAchievements] = useState<PublicAchievement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState<string>('all');
-  const [selectedYear, setSelectedYear] = useState<string>('2024');
+  const [selectedMonth, setSelectedMonth] = useState<string>(new Date().getMonth() + 1 + '');
+  const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString());
   const [currentPage, setCurrentPage] = useState(1);
   const achievementsPerPage = 10;
 
