@@ -4,10 +4,11 @@ import { X, Calendar, FileText, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import type { Achievement } from '@/hooks/useAchievements';
 
 interface AchievementFormProps {
@@ -85,19 +86,28 @@ const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel })
             <div className="space-y-2">
               <Label htmlFor="description">Description *</Label>
               <div className="space-y-2">
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe what was accomplished, tools used, and expected impact..."
-                  rows={6}
-                  required
-                />
-                <div className="text-xs text-gray-500 space-y-1">
-                  <p><strong>Formatting tips:</strong></p>
-                  <p>• Use numbered lists: 1- First action 2- Second action</p>
-                  <p>• Separate paragraphs with line breaks for better readability</p>
-                  <p>• You can copy formatted text from documents and paste here</p>
+                <div className="border rounded-md">
+                  <ReactQuill
+                    value={formData.description}
+                    onChange={(value) => setFormData({ ...formData, description: value })}
+                    placeholder="Describe what was accomplished, tools used, and expected impact..."
+                    modules={{
+                      toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['clean']
+                      ],
+                    }}
+                    formats={[
+                      'header', 'bold', 'italic', 'underline',
+                      'list', 'bullet'
+                    ]}
+                    style={{ minHeight: '120px' }}
+                  />
+                </div>
+                <div className="text-xs text-gray-500">
+                  <p><strong>Formatting tips:</strong> Use the toolbar above to format your text with headings, bold, italic, and lists.</p>
                 </div>
               </div>
             </div>

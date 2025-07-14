@@ -71,11 +71,11 @@ const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achieveme
         {achievement.description && (
           <div className="mb-4">
             <div 
-              className="text-gray-700 text-sm leading-relaxed whitespace-pre-line"
+              className="text-gray-700 text-sm leading-relaxed prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
                 __html: showFullDescription || !achievement.description || achievement.description.length <= 200 
-                  ? achievement.description.replace(/\n/g, '<br/>') 
-                  : truncatedDescription.replace(/\n/g, '<br/>')
+                  ? achievement.description 
+                  : truncatedDescription
               }}
             />
             {achievement.description && achievement.description.length > 200 && (

@@ -92,9 +92,12 @@ const AchievementCard: React.FC<AchievementCardProps> = ({ achievement, onUpdate
         </div>
 
         <div className="mb-4">
-          <p className="text-gray-700 text-sm leading-relaxed">
-            {showFullDescription ? achievement.description : truncatedDescription}
-          </p>
+          <div 
+            className="text-gray-700 text-sm leading-relaxed prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={{
+              __html: showFullDescription ? achievement.description : truncatedDescription
+            }}
+          />
           {achievement.description.length > 150 && (
             <button
               onClick={() => setShowFullDescription(!showFullDescription)}
