@@ -14,6 +14,7 @@ export interface Achievement {
   category: string;
   link?: string;
   user_id: string;
+  project_id?: string;
   created_at: string;
   updated_at: string;
 }
@@ -24,15 +25,20 @@ export const useAchievements = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchAchievements = async () => {
+  const fetchAchievements = async (projectId?: string) => {
     if (!user) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      let query = supabase
         .from('achievements')
         .select('*')
-        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -46,6 +52,7 @@ export const useAchievements = () => {
         category: item.category,
         link: item.link || '',
         user_id: item.user_id,
+        project_id: item.project_id,
         created_at: item.created_at,
         updated_at: item.updated_at
       }));
@@ -66,7 +73,7 @@ export const useAchievements = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('achievements')
         .insert([{
           title: achievement.title,
@@ -76,6 +83,7 @@ export const useAchievements = () => {
           is_applied_to_website: achievement.isAppliedToWebsite,
           category: achievement.category,
           link: achievement.link,
+          project_id: achievement.project_id,
           user_id: user.id
         }])
         .select()
@@ -94,6 +102,7 @@ export const useAchievements = () => {
           category: data.category,
           link: data.link || '',
           user_id: data.user_id,
+          project_id: data.project_id,
           created_at: data.created_at,
           updated_at: data.updated_at
         };
@@ -125,8 +134,9 @@ export const useAchievements = () => {
       if (updates.isAppliedToWebsite !== undefined) updateData.is_applied_to_website = updates.isAppliedToWebsite;
       if (updates.category !== undefined) updateData.category = updates.category;
       if (updates.link !== undefined) updateData.link = updates.link;
+      if (updates.project_id !== undefined) updateData.project_id = updates.project_id;
 
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('achievements')
         .update(updateData)
         .eq('id', achievementId);
@@ -156,7 +166,7 @@ export const useAchievements = () => {
 
   const deleteAchievement = async (achievementId: string) => {
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('achievements')
         .delete()
         .eq('id', achievementId);
@@ -178,16 +188,12 @@ export const useAchievements = () => {
     }
   };
 
-  useEffect(() => {
-    fetchAchievements();
-  }, [user]);
-
   return {
     achievements,
     loading,
     addAchievement,
     updateAchievement,
     deleteAchievement,
-    refetch: fetchAchievements
+    fetchAchievements
   };
 };

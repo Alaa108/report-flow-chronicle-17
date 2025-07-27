@@ -16,9 +16,10 @@ interface AchievementFormProps {
   onCancel: () => void;
   initialData?: Achievement;
   isEdit?: boolean;
+  projectId?: string;
 }
 
-const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel, initialData, isEdit = false }) => {
+const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel, initialData, isEdit = false, projectId }) => {
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     description: initialData?.description || '',
@@ -42,7 +43,8 @@ const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel, i
       isCompleted: formData.isCompleted,
       isAppliedToWebsite: formData.isAppliedToWebsite,
       category: formData.category,
-      link: formData.link
+      link: formData.link,
+      project_id: projectId
     });
   };
 

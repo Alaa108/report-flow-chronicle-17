@@ -3,27 +3,17 @@ import { Calendar, CheckCircle, Globe, Tag, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
-interface PublicAchievement {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  is_completed: boolean;
-  is_applied_to_website: boolean;
-  category: string;
-  link?: string;
-  created_at: string;
-}
+import type { Achievement } from '@/hooks/useAchievements';
 
 interface ClientAchievementCardProps {
-  achievement: PublicAchievement;
+  achievement: Achievement;
 }
 
 const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achievement }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -110,7 +100,7 @@ const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achieveme
               <span className="text-sm text-gray-600">Completed</span>
             </div>
 
-            {achievement.is_applied_to_website && (
+            {achievement.isAppliedToWebsite && (
               <div className="flex items-center gap-2">
                 <Globe className="h-4 w-4 text-green-600" />
                 <span className="text-sm text-gray-600">Applied to Website</span>
@@ -123,7 +113,7 @@ const ClientAchievementCard: React.FC<ClientAchievementCardProps> = ({ achieveme
               <CheckCircle className="mr-1 h-3 w-3" />
               Completed
             </Badge>
-            {achievement.is_applied_to_website && (
+            {achievement.isAppliedToWebsite && (
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                 <Globe className="mr-1 h-3 w-3" />
                 Live
