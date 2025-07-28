@@ -98,6 +98,8 @@ export const useProjects = () => {
   useEffect(() => {
     if (user) {
       fetchProjects();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
