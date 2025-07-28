@@ -158,6 +158,23 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Dashboard Statistics */}
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="bg-card text-card-foreground p-6 rounded-lg border">
+                <h3 className="text-sm font-medium text-muted-foreground">Total Achievements</h3>
+                <p className="text-3xl font-bold">{achievements.length}</p>
+              </div>
+              <div className="bg-card text-card-foreground p-6 rounded-lg border">
+                <h3 className="text-sm font-medium text-muted-foreground">Completed</h3>
+                <p className="text-3xl font-bold text-green-600">{achievements.filter(a => a.isCompleted).length}</p>
+              </div>
+              <div className="bg-card text-card-foreground p-6 rounded-lg border">
+                <h3 className="text-sm font-medium text-muted-foreground">Pending</h3>
+                <p className="text-3xl font-bold text-yellow-600">{achievements.filter(a => !a.isCompleted).length}</p>
+              </div>
+            </div>
+
+            {/* Achievements List */}
             {achievements.map((achievement) => (
             <AchievementCard
               key={achievement.id}

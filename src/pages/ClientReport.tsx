@@ -21,11 +21,14 @@ const ClientReport = () => {
           await fetchAchievements(projectData.id);
         }
         setProjectLoading(false);
+      } else {
+        // No projectCode, just load without filtering by project
+        setProjectLoading(false);
       }
     };
 
     loadProjectData();
-  }, [projectCode]);
+  }, [projectCode, getProjectByCode, fetchAchievements]);
 
   if (loading || projectLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
