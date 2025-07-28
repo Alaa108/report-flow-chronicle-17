@@ -8,11 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 interface ProjectFormProps {
   onSubmit: (project: { name: string; description?: string }) => void;
   onCancel?: () => void;
+  initialData?: { name: string; description?: string };
 }
 
-export const ProjectForm = ({ onSubmit, onCancel }: ProjectFormProps) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+export const ProjectForm = ({ onSubmit, onCancel, initialData }: ProjectFormProps) => {
+  const [name, setName] = useState(initialData?.name || '');
+  const [description, setDescription] = useState(initialData?.description || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

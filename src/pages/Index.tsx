@@ -13,9 +13,10 @@ const Index = () => {
   const [showForm, setShowForm] = useState(false);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { achievements, loading, addAchievement, updateAchievement, deleteAchievement, fetchAchievements } = useAchievements();
-  const { projects, loading: projectsLoading, createProject } = useProjects();
+  const { projects, loading: projectsLoading, createProject, updateProject, deleteProject } = useProjects();
   const { signOut } = useAuth();
 
   const handleSubmit = async (achievement: Omit<Achievement, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
@@ -32,8 +33,22 @@ const Index = () => {
   };
 
   const handleCreateProject = async (project: { name: string; description?: string }) => {
-    await createProject(project);
+    if (editingProject) {
+      await updateProject(editingProject.id, project);
+      setEditingProject(null);
+    } else {
+      await createProject(project);
+    }
     setShowProjectForm(false);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setShowProjectForm(true);
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    await deleteProject(projectId);
   };
 
   const handleSelectProject = (project: Project) => {
@@ -54,6 +69,7 @@ const Index = () => {
 
   const handleCancelProject = () => {
     setShowProjectForm(false);
+    setEditingProject(null);
   };
 
   const handleEdit = (achievement: Achievement) => {
@@ -111,6 +127,7 @@ const Index = () => {
             <ProjectForm 
               onSubmit={handleCreateProject} 
               onCancel={handleCancelProject}
+              initialData={editingProject || undefined}
             />
           </div>
         )}
@@ -133,12 +150,14 @@ const Index = () => {
                 key={project.id}
                 project={project}
                 onSelect={handleSelectProject}
+                onEdit={handleEditProject}
+                onDelete={handleDeleteProject}
                 achievementCount={achievements.filter(a => a.project_id === project.id).length}
               />
             ))}
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="space-y-6">
             {achievements.map((achievement) => (
             <AchievementCard
               key={achievement.id}

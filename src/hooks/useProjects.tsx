@@ -85,13 +85,68 @@ export const useProjects = () => {
         .from('projects')
         .select('*')
         .eq('project_code', projectCode)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
     } catch (error: any) {
       console.error('Error fetching project by code:', error);
       return null;
+    }
+  };
+
+  const updateProject = async (projectId: string, updates: { name?: string; description?: string }) => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .update(updates)
+        .eq('id', projectId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setProjects(prev => prev.map(p => p.id === projectId ? data : p));
+        toast({
+          title: "Project updated",
+          description: "Your project has been successfully updated.",
+        });
+        return data;
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error updating project",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteProject = async (projectId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      setProjects(prev => prev.filter(p => p.id !== projectId));
+      toast({
+        title: "Project deleted",
+        description: "Your project has been successfully deleted.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error deleting project",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -107,6 +162,8 @@ export const useProjects = () => {
     projects,
     loading,
     createProject,
+    updateProject,
+    deleteProject,
     getProjectByCode,
     refetch: fetchProjects
   };

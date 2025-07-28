@@ -2,16 +2,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Project } from '@/hooks/useProjects';
-import { ExternalLink, Copy } from 'lucide-react';
+import { ExternalLink, Copy, Edit, Trash2, MoreVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface ProjectCardProps {
   project: Project;
   onSelect: (project: Project) => void;
+  onEdit: (project: Project) => void;
+  onDelete: (projectId: string) => void;
   achievementCount?: number;
 }
 
-export const ProjectCard = ({ project, onSelect, achievementCount = 0 }: ProjectCardProps) => {
+export const ProjectCard = ({ project, onSelect, onEdit, onDelete, achievementCount = 0 }: ProjectCardProps) => {
   const { toast } = useToast();
 
   const copyReportLink = () => {
@@ -55,6 +63,26 @@ export const ProjectCard = ({ project, onSelect, achievementCount = 0 }: Project
             >
               <ExternalLink className="h-4 w-4" />
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onEdit(project)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => onDelete(project.id)}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardHeader>
