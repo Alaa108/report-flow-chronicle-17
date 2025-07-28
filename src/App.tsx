@@ -26,7 +26,6 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/report" element={<ClientReport />} />
-            <Route path="/report/:projectCode" element={<ClientReport />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

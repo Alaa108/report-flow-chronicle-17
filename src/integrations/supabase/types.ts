@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
+    PostgrestVersion: "12.2.3 (519615d)"
   }
   public: {
     Tables: {
@@ -24,7 +24,6 @@ export type Database = {
           is_applied_to_website: boolean
           is_completed: boolean
           link: string | null
-          project_id: string | null
           title: string
           updated_at: string
           user_id: string
@@ -38,7 +37,6 @@ export type Database = {
           is_applied_to_website?: boolean
           is_completed?: boolean
           link?: string | null
-          project_id?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -52,46 +50,7 @@ export type Database = {
           is_applied_to_website?: boolean
           is_completed?: boolean
           link?: string | null
-          project_id?: string | null
           title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "achievements_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      projects: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          name: string
-          project_code: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          name: string
-          project_code: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string
-          project_code?: string
           updated_at?: string
           user_id?: string
         }
@@ -134,10 +93,7 @@ export type Database = {
       }
     }
     Functions: {
-      generate_project_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
