@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useAchievements, type Achievement } from '@/hooks/useAchievements';
 import AchievementForm from '@/components/AchievementForm';
 import AchievementCard from '@/components/AchievementCard';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const { user, signOut } = useAuth();
@@ -110,6 +111,9 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">Welcome, {user?.email}</span>
+              <Link to="/projects">
+                <Button variant="outline">Manage Projects</Button>
+              </Link>
               <Button 
                 onClick={() => setShowAchievementForm(true)} 
                 className="bg-blue-600 hover:bg-blue-700"

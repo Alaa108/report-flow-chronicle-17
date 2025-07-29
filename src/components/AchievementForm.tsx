@@ -12,13 +12,13 @@ import 'react-quill/dist/quill.snow.css';
 import type { Achievement } from '@/hooks/useAchievements';
 
 interface AchievementFormProps {
-  onSubmit: (achievement: Omit<Achievement, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => void;
-  onCancel: () => void;
+  onSubmit: (achievement: Omit<Achievement, 'id' | 'created_at' | 'updated_at'>) => void;
+  onCancel?: () => void;
   initialData?: Achievement;
   isEdit?: boolean;
 }
 
-const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel, initialData, isEdit = false }) => {
+const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel = () => {}, initialData, isEdit = false }) => {
   const [formData, setFormData] = useState({
     title: initialData?.title || '',
     description: initialData?.description || '',
@@ -42,7 +42,8 @@ const AchievementForm: React.FC<AchievementFormProps> = ({ onSubmit, onCancel, i
       isCompleted: formData.isCompleted,
       isAppliedToWebsite: formData.isAppliedToWebsite,
       category: formData.category,
-      link: formData.link
+      link: formData.link,
+      project_id: initialData?.project_id || ''
     });
   };
 
