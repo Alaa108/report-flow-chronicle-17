@@ -10,87 +10,14 @@ export type Database = {
   // Allows to automatically instanciate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
-      achievements: {
-        Row: {
-          category: string
-          created_at: string
-          date: string
-          description: string | null
-          id: string
-          is_applied_to_website: boolean
-          is_completed: boolean
-          link: string | null
-          title: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          date: string
-          description?: string | null
-          id?: string
-          is_applied_to_website?: boolean
-          is_completed?: boolean
-          link?: string | null
-          title: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          date?: string
-          description?: string | null
-          id?: string
-          is_applied_to_website?: boolean
-          is_completed?: boolean
-          link?: string | null
-          title?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
-      achievements_public: {
-        Row: {
-          category: string | null
-          created_at: string | null
-          date: string | null
-          description: string | null
-          id: string | null
-          is_applied_to_website: boolean | null
-          is_completed: boolean | null
-          title: string | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string | null
-          date?: string | null
-          description?: string | null
-          id?: string | null
-          is_applied_to_website?: boolean | null
-          is_completed?: boolean | null
-          title?: string | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string | null
-          date?: string | null
-          description?: string | null
-          id?: string | null
-          is_applied_to_website?: boolean | null
-          is_completed?: boolean | null
-          title?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
