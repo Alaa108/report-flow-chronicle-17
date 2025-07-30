@@ -38,6 +38,8 @@ const App = () => (
                 <ProjectReport />
               </ProtectedRoute>
             } />
+            {/* Public client report route - no authentication required */}
+            <Route path="/client-report/:projectId" element={<ClientReport />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
