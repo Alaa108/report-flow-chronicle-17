@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import ClientReport from "./pages/ClientReport";
 import Projects from "./pages/Projects";
 import ProjectDetails from "./pages/ProjectDetails";
-import ProjectReport from "./pages/ProjectReport";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,11 +31,6 @@ const App = () => (
             <Route path="/project/:projectId" element={
               <ProtectedRoute>
                 <ProjectDetails />
-              </ProtectedRoute>
-            } />
-            <Route path="/project/:projectId/report" element={
-              <ProtectedRoute>
-                <ProjectReport />
               </ProtectedRoute>
             } />
             {/* Public client report route - no authentication required */}

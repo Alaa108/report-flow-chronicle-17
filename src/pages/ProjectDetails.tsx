@@ -116,7 +116,7 @@ const ProjectDetails = () => {
   };
 
   const handleViewReport = () => {
-    navigate(`/project/${projectId}/report`);
+    navigate(`/client-report/${projectId}`);
   };
 
   const getStatusColor = (status: string) => {
