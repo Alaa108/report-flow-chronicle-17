@@ -41,6 +41,7 @@ const ClientReport = () => {
   
   // Filter states
   const [monthFilter, setMonthFilter] = useState<string>('all');
+  const [yearFilter, setYearFilter] = useState<string>('all');
   const [nameFilter, setNameFilter] = useState<string>('');
   const [completedFilter, setCompletedFilter] = useState<string>('all');
   const [liveFilter, setLiveFilter] = useState<string>('all');
@@ -84,9 +85,22 @@ const ClientReport = () => {
     fetchProjectAndAchievements();
   }, [projectId]);
 
+  // Get available years from achievements
+  const availableYears = useMemo(() => {
+    const years = [...new Set(achievements.map(a => new Date(a.date).getFullYear()))];
+    return years.sort((a, b) => b - a);
+  }, [achievements]);
+
   // Filtered achievements
   const filteredAchievements = useMemo(() => {
     return achievements.filter(achievement => {
+      // Year filter
+      if (yearFilter !== 'all') {
+        const achievementYear = new Date(achievement.date).getFullYear();
+        const filterYear = parseInt(yearFilter);
+        if (achievementYear !== filterYear) return false;
+      }
+      
       // Month filter
       if (monthFilter !== 'all') {
         const achievementMonth = new Date(achievement.date).getMonth();
@@ -109,7 +123,7 @@ const ClientReport = () => {
       
       return true;
     });
-  }, [achievements, monthFilter, nameFilter, completedFilter, liveFilter]);
+  }, [achievements, yearFilter, monthFilter, nameFilter, completedFilter, liveFilter]);
 
   // Paginated achievements
   const paginatedAchievements = useMemo(() => {
@@ -184,7 +198,7 @@ const ClientReport = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
         <div className="container mx-auto px-4 py-12">
-          <div className="max-w-4xl mx-auto text-center">
+          <div className="max-w-7xl mx-auto text-center">
             <h1 className="text-2xl font-semibold text-slate-800 mb-4">Project Not Found</h1>
             <p className="text-slate-600">The requested project report could not be found.</p>
           </div>
@@ -196,7 +210,7 @@ const ClientReport = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-12 text-white">
             <div className="absolute inset-0 bg-black/10"></div>
@@ -298,6 +312,20 @@ const ClientReport = () => {
                     <Filter className="h-4 w-4 text-slate-500" />
                     <span className="text-sm text-slate-600">Filters:</span>
                   </div>
+                  
+                  <Select value={yearFilter} onValueChange={setYearFilter}>
+                    <SelectTrigger className="w-24">
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Years</SelectItem>
+                      {availableYears.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   
                   <Select value={monthFilter} onValueChange={setMonthFilter}>
                     <SelectTrigger className="w-32">
