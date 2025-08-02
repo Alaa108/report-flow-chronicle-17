@@ -3,9 +3,13 @@ import { useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, ExternalLink, Building2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Calendar, ExternalLink, Building2, Filter, Globe, CheckCircle, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ClientAchievementCard from '@/components/ClientAchievementCard';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
 interface PublicAchievement {
   id: string;
@@ -34,6 +38,16 @@ const ClientReport = () => {
   const [project, setProject] = useState<PublicProject | null>(null);
   const [achievements, setAchievements] = useState<PublicAchievement[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Filter states
+  const [monthFilter, setMonthFilter] = useState<string>('all');
+  const [nameFilter, setNameFilter] = useState<string>('');
+  const [completedFilter, setCompletedFilter] = useState<string>('all');
+  const [liveFilter, setLiveFilter] = useState<string>('all');
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchProjectAndAchievements = async () => {
@@ -69,6 +83,42 @@ const ClientReport = () => {
 
     fetchProjectAndAchievements();
   }, [projectId]);
+
+  // Filtered achievements
+  const filteredAchievements = useMemo(() => {
+    return achievements.filter(achievement => {
+      // Month filter
+      if (monthFilter !== 'all') {
+        const achievementMonth = new Date(achievement.date).getMonth();
+        const filterMonth = parseInt(monthFilter);
+        if (achievementMonth !== filterMonth) return false;
+      }
+      
+      // Name filter
+      if (nameFilter && !achievement.title.toLowerCase().includes(nameFilter.toLowerCase())) {
+        return false;
+      }
+      
+      // Completed filter
+      if (completedFilter === 'completed' && !achievement.is_completed) return false;
+      if (completedFilter === 'pending' && achievement.is_completed) return false;
+      
+      // Live filter
+      if (liveFilter === 'live' && !achievement.is_applied_to_website) return false;
+      if (liveFilter === 'not-live' && achievement.is_applied_to_website) return false;
+      
+      return true;
+    });
+  }, [achievements, monthFilter, nameFilter, completedFilter, liveFilter]);
+
+  // Paginated achievements
+  const paginatedAchievements = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredAchievements.slice(startIndex, endIndex);
+  }, [filteredAchievements, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredAchievements.length / itemsPerPage);
 
   const stats = useMemo(() => {
     const total = achievements.length;
@@ -148,52 +198,53 @@ const ClientReport = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-slate-800 mb-2">
-              {project.name} - SEO Report
-            </h1>
-            {project.client_name && (
-              <p className="text-xl text-slate-600 mb-4">
-                <Building2 className="inline h-5 w-5 mr-2" />
-                Client: {project.client_name}
-              </p>
-            )}
-            <div className="flex items-center justify-center gap-4 text-sm text-slate-500">
-              <Badge variant="outline" className={getStatusColor(project.status)}>
-                {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-              </Badge>
-              <span className="flex items-center">
-                <Calendar className="h-4 w-4 mr-1" />
-                Generated on {new Date().toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}
-              </span>
+          <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mb-12 text-white">
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-4xl font-bold mb-2">{project.name}</h1>
+                  <p className="text-xl opacity-90">SEO Progress Report</p>
+                </div>
+                <div className="text-right">
+                  <Badge variant="secondary" className="bg-white/20 text-white border-white/30 mb-2">
+                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                  </Badge>
+                  <div className="text-sm opacity-75">
+                    {new Date().toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                </div>
+              </div>
+              
+              {project.client_name && (
+                <div className="flex items-center gap-2 mb-4">
+                  <Building2 className="h-5 w-5" />
+                  <span className="text-lg">{project.client_name}</span>
+                </div>
+              )}
+              
+              {project.description && (
+                <p className="text-white/90 leading-relaxed mb-4">{project.description}</p>
+              )}
+              
+              {project.url && (
+                <a 
+                  href={project.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <Globe className="h-4 w-4 mr-2" />
+                  Visit Website
+                </a>
+              )}
             </div>
           </div>
 
-          {/* Project Description */}
-          {project.description && (
-            <Card className="border-0 shadow-sm mb-8">
-              <CardContent className="p-6">
-                <p className="text-slate-700 leading-relaxed">{project.description}</p>
-                {project.url && (
-                  <div className="mt-4">
-                    <a 
-                      href={project.url} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-blue-600 hover:text-blue-700 transition-colors"
-                    >
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Visit Website
-                    </a>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
 
           {/* Statistics Cards */}
           <div className="grid gap-6 md:grid-cols-4 mb-8">
@@ -233,26 +284,155 @@ const ClientReport = () => {
           {/* Achievements Section */}
           <Card className="border-0 shadow-sm">
             <CardHeader className="border-b border-slate-100">
-              <CardTitle className="text-xl text-slate-800">SEO Tasks & Achievements</CardTitle>
-              <p className="text-sm text-slate-600">
-                Detailed breakdown of all SEO improvements and implementations
-              </p>
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div>
+                  <CardTitle className="text-xl text-slate-800">SEO Tasks & Achievements</CardTitle>
+                  <p className="text-sm text-slate-600">
+                    Detailed breakdown of all SEO improvements and implementations
+                  </p>
+                </div>
+                
+                {/* Filters */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4 text-slate-500" />
+                    <span className="text-sm text-slate-600">Filters:</span>
+                  </div>
+                  
+                  <Select value={monthFilter} onValueChange={setMonthFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Months</SelectItem>
+                      <SelectItem value="0">January</SelectItem>
+                      <SelectItem value="1">February</SelectItem>
+                      <SelectItem value="2">March</SelectItem>
+                      <SelectItem value="3">April</SelectItem>
+                      <SelectItem value="4">May</SelectItem>
+                      <SelectItem value="5">June</SelectItem>
+                      <SelectItem value="6">July</SelectItem>
+                      <SelectItem value="7">August</SelectItem>
+                      <SelectItem value="8">September</SelectItem>
+                      <SelectItem value="9">October</SelectItem>
+                      <SelectItem value="10">November</SelectItem>
+                      <SelectItem value="11">December</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Input
+                    placeholder="Search tasks..."
+                    value={nameFilter}
+                    onChange={(e) => setNameFilter(e.target.value)}
+                    className="w-40"
+                  />
+                  
+                  <Select value={completedFilter} onValueChange={setCompletedFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="completed">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          Completed
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="pending">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-amber-500" />
+                          Pending
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={liveFilter} onValueChange={setLiveFilter}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Live" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="live">
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4 text-blue-500" />
+                          Live
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="not-live">Not Live</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="p-6">
-              {achievements.length === 0 ? (
+              {filteredAchievements.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-slate-500 mb-2">No achievements recorded yet</p>
-                  <p className="text-sm text-slate-400">Check back later for updates on your SEO progress</p>
+                  <p className="text-slate-500 mb-2">
+                    {achievements.length === 0 ? "No achievements recorded yet" : "No achievements match your filters"}
+                  </p>
+                  <p className="text-sm text-slate-400">
+                    {achievements.length === 0 ? "Check back later for updates on your SEO progress" : "Try adjusting your filter criteria"}
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {achievements.map((achievement) => (
-                    <ClientAchievementCard 
-                      key={achievement.id} 
-                      achievement={achievement} 
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="space-y-4 mb-6">
+                    {paginatedAchievements.map((achievement) => (
+                      <ClientAchievementCard 
+                        key={achievement.id} 
+                        achievement={achievement} 
+                      />
+                    ))}
+                  </div>
+                  
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-center">
+                      <Pagination>
+                        <PaginationContent>
+                          <PaginationItem>
+                            <PaginationPrevious 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) setCurrentPage(currentPage - 1);
+                              }}
+                              className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                          
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  setCurrentPage(page);
+                                }}
+                                isActive={page === currentPage}
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))}
+                          
+                          <PaginationItem>
+                            <PaginationNext 
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+                              }}
+                              className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                            />
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </div>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
