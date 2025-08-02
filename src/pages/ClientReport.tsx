@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Calendar, ExternalLink, Building2, Filter, Globe, CheckCircle, Clock } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import ClientAchievementCard from '@/components/ClientAchievementCard';
+import MonthlySummaryModal from '@/components/MonthlySummaryModal';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 
 interface PublicAchievement {
@@ -391,6 +392,17 @@ const ClientReport = () => {
                       <SelectItem value="not-live">Not Live</SelectItem>
                     </SelectContent>
                   </Select>
+                  
+                  {/* Monthly Summary Button */}
+                  {yearFilter !== 'all' && monthFilter !== 'all' && project && (
+                    <MonthlySummaryModal
+                      projectId={project.id}
+                      year={parseInt(yearFilter)}
+                      month={parseInt(monthFilter)}
+                      projectName={project.name}
+                      achievements={achievements}
+                    />
+                  )}
                 </div>
               </div>
             </CardHeader>

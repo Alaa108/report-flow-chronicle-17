@@ -64,6 +64,36 @@ export type Database = {
           },
         ]
       }
+      monthly_summaries: {
+        Row: {
+          created_at: string
+          id: string
+          month: number
+          project_id: string
+          summary: string | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          month: number
+          project_id: string
+          summary?: string | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          month?: number
+          project_id?: string
+          summary?: string | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       projects: {
         Row: {
           client_name: string | null
