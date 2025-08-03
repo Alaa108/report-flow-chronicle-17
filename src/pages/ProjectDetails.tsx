@@ -12,6 +12,7 @@ import { Project } from '@/hooks/useProjects';
 import AchievementCard from '@/components/AchievementCard';
 import AchievementForm from '@/components/AchievementForm';
 import ProjectForm from '@/components/ProjectForm';
+import MonthlySummaryForm from '@/components/MonthlySummaryForm';
 import { useAuth } from '@/contexts/AuthContext';
 
 const ProjectDetails = () => {
@@ -195,6 +196,7 @@ const ProjectDetails = () => {
                 <BarChart3 className="h-4 w-4 mr-2" />
                 View Report
               </Button>
+              <MonthlySummaryForm projectId={projectId!} projectName={project?.name || 'Project'} />
               <Button 
                 onClick={() => setShowAchievementForm(true)} 
                 className="bg-blue-600 hover:bg-blue-700"

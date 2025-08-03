@@ -128,117 +128,19 @@ const MonthlySummaryModal = ({
         </DialogHeader>
         
         <div className="space-y-6">
-          {/* Monthly Stats */}
-          <div className="grid grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-slate-800">{monthlyAchievements.length}</div>
-                <p className="text-sm text-slate-600">Total Tasks</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-emerald-600">{completedCount}</div>
-                <p className="text-sm text-slate-600">Completed</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-2xl font-bold text-blue-600">{appliedCount}</div>
-                <p className="text-sm text-slate-600">Applied to Site</p>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* Summary Section */}
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Monthly Summary</CardTitle>
-                {!isEditing && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    <Edit2 className="h-4 w-4 mr-2" />
-                    Edit
-                  </Button>
+              <CardTitle>Monthly Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose max-w-none">
+                {summary ? (
+                  <div className="whitespace-pre-wrap text-base leading-relaxed">{summary}</div>
+                ) : (
+                  <p className="text-slate-500 italic text-center py-8">No summary available for this month.</p>
                 )}
               </div>
-            </CardHeader>
-            <CardContent>
-              {isEditing ? (
-                <div className="space-y-4">
-                  <Textarea
-                    value={summary}
-                    onChange={(e) => setSummary(e.target.value)}
-                    placeholder={`Write a summary of what was accomplished in ${monthName} ${year}...`}
-                    className="min-h-32"
-                  />
-                  <div className="flex gap-2">
-                    <Button onClick={saveSummary} disabled={loading}>
-                      <Save className="h-4 w-4 mr-2" />
-                      Save Summary
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setIsEditing(false);
-                        fetchSummary();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="prose max-w-none">
-                  {summary ? (
-                    <p className="whitespace-pre-wrap">{summary}</p>
-                  ) : (
-                    <p className="text-slate-500 italic">No summary available for this month.</p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Monthly Achievements */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Tasks for {monthName} {year}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {monthlyAchievements.length === 0 ? (
-                <p className="text-slate-500 text-center py-4">No tasks recorded for this month.</p>
-              ) : (
-                <div className="space-y-3">
-                  {monthlyAchievements.map((achievement) => (
-                    <div key={achievement.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-slate-800">{achievement.title}</h4>
-                        <p className="text-sm text-slate-600 truncate">{achievement.description}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">
-                          {achievement.category}
-                        </Badge>
-                        {achievement.is_completed && (
-                          <Badge variant="default" className="bg-emerald-100 text-emerald-700 text-xs">
-                            Completed
-                          </Badge>
-                        )}
-                        {achievement.is_applied_to_website && (
-                          <Badge variant="default" className="bg-blue-100 text-blue-700 text-xs">
-                            Live
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>
