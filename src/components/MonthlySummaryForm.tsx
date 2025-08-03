@@ -187,7 +187,7 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
               <CardContent className="max-h-96 overflow-y-auto">
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <div className="border rounded-md overflow-hidden">
+                    <div className="border rounded-md">
                       <ReactQuill
                         value={summary}
                         onChange={(value) => setSummary(value)}
@@ -206,9 +206,9 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
                         ]}
                         style={{ minHeight: '200px', maxHeight: '300px' }}
                       />
-                      <div className="px-3 py-2 bg-gray-50 border-t text-xs text-gray-500">
-                        <p><strong>Formatting tips:</strong> Use the toolbar above to format your text with headings, bold, italic, and lists.</p>
-                      </div>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      <p><strong>Formatting tips:</strong> Use the toolbar above to format your text with headings, bold, italic, and lists.</p>
                     </div>
                   </div>
                 </div>
