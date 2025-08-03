@@ -130,7 +130,7 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
           Add Monthly Summary
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
@@ -184,7 +184,7 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
               <CardHeader>
                 <CardTitle>Monthly Summary</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="max-h-96 overflow-y-auto">
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <div className="border rounded-md">
@@ -204,19 +204,21 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
                           'header', 'bold', 'italic', 'underline',
                           'list', 'bullet'
                         ]}
-                        style={{ minHeight: '180px' }}
+                        style={{ minHeight: '200px', maxHeight: '300px' }}
                       />
                     </div>
                     <div className="text-xs text-gray-500">
                       <p><strong>Formatting tips:</strong> Use the toolbar above to format your text with headings, bold, italic, and lists.</p>
                     </div>
                   </div>
-                  <Button onClick={saveSummary} disabled={loading || !summary.trim()}>
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Summary
-                  </Button>
                 </div>
               </CardContent>
+              <div className="p-6 pt-0">
+                <Button onClick={saveSummary} disabled={loading || !summary.trim()} className="w-full">
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Summary
+                </Button>
+              </div>
             </Card>
           )}
         </div>
