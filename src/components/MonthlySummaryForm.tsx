@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { FileText, Save, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface MonthlySummaryFormProps {
   projectId: string;
@@ -185,12 +186,31 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Textarea
-                    value={summary}
-                    onChange={(e) => setSummary(e.target.value)}
-                    placeholder={`Write a summary of what was accomplished in ${months.find(m => m.value === selectedMonth)?.label} ${selectedYear}...`}
-                    className="min-h-40"
-                  />
+                  <div className="space-y-2">
+                    <div className="border rounded-md">
+                      <ReactQuill
+                        value={summary}
+                        onChange={(value) => setSummary(value)}
+                        placeholder={`Write a summary of what was accomplished in ${months.find(m => m.value === selectedMonth)?.label} ${selectedYear}...`}
+                        modules={{
+                          toolbar: [
+                            [{ 'header': [1, 2, 3, false] }],
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['clean']
+                          ],
+                        }}
+                        formats={[
+                          'header', 'bold', 'italic', 'underline',
+                          'list', 'bullet'
+                        ]}
+                        style={{ minHeight: '180px' }}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      <p><strong>Formatting tips:</strong> Use the toolbar above to format your text with headings, bold, italic, and lists.</p>
+                    </div>
+                  </div>
                   <Button onClick={saveSummary} disabled={loading || !summary.trim()}>
                     <Save className="h-4 w-4 mr-2" />
                     Save Summary

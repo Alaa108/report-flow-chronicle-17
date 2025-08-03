@@ -136,7 +136,10 @@ const MonthlySummaryModal = ({
             <CardContent>
               <div className="prose max-w-none">
                 {summary ? (
-                  <div className="whitespace-pre-wrap text-base leading-relaxed">{summary}</div>
+                  <div 
+                    className="text-base leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: summary }}
+                  />
                 ) : (
                   <p className="text-slate-500 italic text-center py-8">No summary available for this month.</p>
                 )}
