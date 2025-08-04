@@ -142,25 +142,25 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onUpdate, onDelete, 
             variant="ghost" 
             size="sm" 
             onClick={handleCopyClientReportUrl}
-            className="flex-1"
+            className="px-2 hover:bg-accent/10"
+            title="Copy Report URL"
           >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy Report URL
+            <Copy className="h-4 w-4" />
           </Button>
           
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 bg-muted/30 rounded-lg p-1">
             <ProjectForm
               project={project}
               onSubmit={handleUpdate}
               trigger={
-                <Button variant="ghost" size="sm" className="px-2">
+                <Button variant="ghost" size="sm" className="px-2 hover:bg-primary/10 hover:text-primary transition-colors" title="Edit Project">
                   <Edit className="h-4 w-4" />
                 </Button>
               }
             />
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="sm" className="px-2 text-destructive hover:text-destructive">
+                <Button variant="ghost" size="sm" className="px-2 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors" title="Delete Project">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
