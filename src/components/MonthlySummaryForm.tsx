@@ -88,6 +88,8 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
           year: parseInt(selectedYear),
           month: parseInt(selectedMonth),
           summary: summary.trim()
+        }, {
+          onConflict: 'project_id,year,month'
         });
 
       if (error) throw error;
