@@ -184,10 +184,10 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
               <CardHeader>
                 <CardTitle>Monthly Summary</CardTitle>
               </CardHeader>
-              <CardContent className="max-h-96 overflow-y-auto">
+              <CardContent>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <div className="border rounded-md">
+                    <div className="border rounded-md max-h-80 overflow-y-auto">
                       <ReactQuill
                         value={summary}
                         onChange={(value) => setSummary(value)}
@@ -204,7 +204,7 @@ const MonthlySummaryForm = ({ projectId, projectName }: MonthlySummaryFormProps)
                           'header', 'bold', 'italic', 'underline',
                           'list', 'bullet'
                         ]}
-                        style={{ minHeight: '200px', maxHeight: '300px' }}
+                        style={{ minHeight: '200px' }}
                       />
                     </div>
                     <div className="text-xs text-gray-500">
